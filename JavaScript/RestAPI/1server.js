@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 
 const users = {};
+const birthday = {};
 
 http.createServer((req, res) => {
     if (req.method === 'GET') {
@@ -20,7 +21,7 @@ http.createServer((req, res) => {
                 res.end(data);
             });
         } else if (req.url === '/users') {
-            return res.end(JSON.stringify(users));
+            return res.end(JSON.stringify(users, birthday));
         }
         return fs.readFile(`.${req.url}`, (err, data) => {
             if (err) {
@@ -38,8 +39,10 @@ http.createServer((req, res) => {
             return req.on('end', () => {
                 console.log('POST 본문(Body):', body);
                 const { name } = JSON.parse(body);
+                const { birth } = JSON.parse(body);
                 const id = Date.now();
                 users[id] = name;
+                birthday[id] = birth;
                 res.writeHead(201);
                 res.end('등록 성공');
             });
@@ -61,7 +64,7 @@ http.createServer((req, res) => {
         if (req.url.startsWith('/users/')) {
             const key = req.url.split('/')[2];
             delete users[key];
-            return res.end(JSON.stringify(users));
+            return res.end(JSON.stringify(users, birthday));
         }
     }
     res.writeHead(404, 'NOT FOUND');

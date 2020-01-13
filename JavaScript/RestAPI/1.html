@@ -6,9 +6,11 @@
     </head>
     <body>
         <nav>
-            <a href="/userlist">명단보기</a>
+            <form action="/getlist" method="GET">
+                <a href="/userlist">명단보기</a>
+            </form>
         </nav>
-        <form id="form">
+        <form id="form" action="/login" method="POST">
             <div>
                 이름
                 <input type="text" id="username">
@@ -17,22 +19,18 @@
                 <button type="submit">등록</button>
             </div>
         </form>
-        <form id="form2">
             <div>
                 이름
-                <input type="text" id="changename">
+                <input type="text" id="username">
                 바꿀 생년월일
-                <input type="text" id="changebirth">
-                <button type="submit">수정</button>
+                <input type="text" id="birthday">
+                <button onclick="putbirth();">수정</button>
             </div>
-        </form>
-        <form id="form3">
             <div>
                 삭제할 이름
-                <input type="text" id="delname">
-                <button type="submit">삭제</button>
+                <input type="text" id="username">
+                <button onclick="deluser();">삭제</button>
             </div>
-        </form>
         <script src="./1Front.js"></script>
     </body>
 </html>

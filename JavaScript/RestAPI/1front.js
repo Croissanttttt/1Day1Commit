@@ -1,11 +1,17 @@
 function getUser() { 
     let xhr = new XMLHttpRequest();
+    xhr.open('GET', '/users');
+    xhr.send();
+}
+
+
+function putbirth() {
+    let xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.status === 200) {
             let users = JSON.parse(xhr.responseText);
             Object.keys(users).map(function (key) {
-                let edit = document.createElement('button');
-                edit.addEventListener('click', function () { // 수정 버튼 클릭
+                edit.addEventListener('click', function () {
                     let name = prompt('바꿀 이름을 입력하세요');
                     if (!name) {
                         return alert('이름을 반드시 입력하셔야 합니다');
@@ -14,51 +20,57 @@ function getUser() {
                     xhr.onload = function () {
                         if (xhr.status === 200) {
                             console.log(xhr.responseText);
-                            getUser();
+                            putbirth();
                         } else {
                             console.error(xhr.responseText);
                         }
                     };
                     xhr.open('PUT', '/users/' +key);
                     xhr.setRequestHeader('Content-Type', 'application/json');
-                    xhr.send(JSON.stringify({ name: name}));
+                    xhr.send(JSON.stringify({ name: name, birthday: birthday }));
                 });
-                let remove = document.createElement('button');
-                remove.textContent = '삭제';
-                remove.addEventListener('click', function () { //삭제 버튼 클릭
+            });
+        } else {
+            console.error(xhr.responseText);
+        }
+        e.target.username.value = '';
+        e.target.birthday.value = '';
+    };
+}
+
+function deluser() {
+    let xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            let users = JSON.parse(xhr.responseText);
+            Object.keys(users).map(function (key) {
                     let xhr = new XMLHttpRequest();
                     xhr.onload = function () {
                         if (xhr.status === 200) {
                             console.log(xhr.responseText);
-                            getUser();
+                            deluser();
                         } else {
                             console.error(xhr.responseText);
                         }
                     };
                     xhr.open('DELETE', '/users/' + key);
                     xhr.send();
-                });
-                UserDiv.appendChild(span);
-                UserDiv.appendChild(edit);
-                UserDiv.appendChild(remove);
-                list.appendChild(UserDiv);
             });
         } else {
             console.error(xhr.responseText);
         }
+        e.target.username.value = '';
+        e.target.birthday.value = '';
     };
-    xhr.open('GET', '/users');
-    xhr.send();
 }
-window.onload = getUser; // 로딩 시 getUser 호출
-// 폼 제출
+
 document.getElementById('form').addEventListener('submit', function (e) {
     e.preventDefault();
-    let name = e.target.username.value;
-    let birthday = e.target.birthday.value;
+    const name = e.target.username.value;
+    const birth = e.target.birthday.value;
     if (!name) {
         return alert('이름을 입력하세요');
-    } else if (!birthday) {
+    } else if (!birth) {
         return alert('생년월일을 입력하세요');
     }
     let xhr = new XMLHttpRequest();
@@ -72,7 +84,7 @@ document.getElementById('form').addEventListener('submit', function (e) {
     };
     xhr.open('POST', '/users');
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify({ name: name }));
+    xhr.send(JSON.stringify({ name: name, birth: birth }));
     e.target.username.value = '';
     e.target.birthday.value = '';
 });
